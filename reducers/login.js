@@ -1,0 +1,38 @@
+import { 
+    REQUEST_SESSION, 
+    SESSION_HAS_ERROR, 
+    SESSION,
+    UPDATE_ORDER_ID
+} from '../actions/login';
+
+export default function login(state = 
+    {
+        isFetching: false,
+        hasError: false,
+        expiration: '',
+        token: '',
+        orderID: ''
+    }, action) {
+    switch (action.type) {
+      case REQUEST_SESSION:
+        return Object.assign({}, state, {
+            isFetching: true
+        })
+      case SESSION:
+        return Object.assign({}, action.payload, {
+            isFetching: false,
+            hasError: false
+        })
+      case SESSION_HAS_ERROR:
+        return Object.assign({}, state, {
+            isFetching: false,
+            hasError: true
+        })
+      case UPDATE_ORDER_ID:
+        return Object.assign({}, state, {
+          orderID: action.payload
+        })
+      default:
+        return state;
+    }
+}

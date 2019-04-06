@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Checheritos",
+    "slug": "checheritos",
+    "privacy": "public",
+    "sdkVersion": "32.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.0.0",
+    "icon": "./assets/images/icon.png",
+    "splash": {
+      "image": "./assets/images/logo-checheritos.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#B6D440"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "bios.software.checheritos",
+      "supportsTablet": true
+    },
+    "android": {
+      "versionCode": 4,
+      "package": "bios.software.checheritos",
+      "permissions": []
+    }
+  }
+}
