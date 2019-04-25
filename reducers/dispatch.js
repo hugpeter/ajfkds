@@ -1,14 +1,16 @@
 import { 
     DISPATCH_LIST_LOADING,
     DISPATCH_LIST,
-    DISPATCH_LIST_ERROR
+    DISPATCH_LIST_ERROR,
+    UPDATE_ORDER_ID
 } from '../actions/dispatch';
 
 export default function dispatchList(state = 
     {
         isFetching: false,
         hasError: false,
-        dispatchList: []
+        dispatchList: [],
+        orderID: ''
     }, action) {
     switch (action.type) {
       case DISPATCH_LIST_LOADING:
@@ -16,14 +18,20 @@ export default function dispatchList(state =
             isFetching: true
         })
       case DISPATCH_LIST:
-        return Object.assign({}, action.payload, {
+        return Object.assign({}, state, {
             isFetching: false,
-            hasError: false
+            hasError: false,
+            dispatchList: action.payload,
+            orderID: ''
         })
       case DISPATCH_LIST_ERROR:
         return Object.assign({}, state, {
             isFetching: false,
             hasError: true
+        })
+      case UPDATE_ORDER_ID:
+        return Object.assign({}, state, {
+          orderID: action.payload
         })
       default:
         return state;

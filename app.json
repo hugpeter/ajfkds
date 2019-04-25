@@ -28,7 +28,7 @@
     "android": {
       "versionCode": 4,
       "package": "bios.software.checheritos",
-      "permissions": []
+      "permissions": ["CAMERA"]
     }
   }
 }

@@ -15,17 +15,39 @@ const english = {
         title: 'Dispatch',
         date: 'Date',
         vendorNumber: 'Vendor #',
-        numPickups: 'Qty'
+        orderId: 'Order #',
+        loading: 'We are getting your orders to deliver now!'
     },
     pickup: {
         title: 'Pick-Up',
-        
+        id: 'Item Id',
+        qty: 'Qty',
+        verifyItem: 'Verify Item',
+        success: 'Item Matched Successfully!',
+        failure: 'Item Not Matched...',
+        scanItem: 'Scan Item QR Code',
+        backToList: 'Back to item List',
+        signatureButton: 'Vendor Signature'
     },
     delivery: {
-        title: 'Delivery'
+        title: 'Delivery',
+        signatureButton: 'Customer Signature'
     },
     settings: {
-        title: 'Settings'
+        title: 'Settings',
+        languages: {
+            english: 'English',
+            spanish: 'Spanish'
+        },
+        logOut: 'Logout',
+        privacyPolicy: 'Privacy Policy',
+        chooseLanguage: 'Change Language'
+    },
+    common: {
+        noOrderSelected: 'No order has been selected...'
+    },
+    signature: {
+        title: 'Please Sign Below'
     }
 };
 

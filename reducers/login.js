@@ -1,8 +1,7 @@
 import { 
     REQUEST_SESSION, 
     SESSION_HAS_ERROR, 
-    SESSION,
-    UPDATE_ORDER_ID
+    SESSION
 } from '../actions/login';
 
 export default function login(state = 
@@ -11,7 +10,6 @@ export default function login(state =
         hasError: false,
         expiration: '',
         token: '',
-        orderID: ''
     }, action) {
     switch (action.type) {
       case REQUEST_SESSION:
@@ -27,10 +25,6 @@ export default function login(state =
         return Object.assign({}, state, {
             isFetching: false,
             hasError: true
-        })
-      case UPDATE_ORDER_ID:
-        return Object.assign({}, state, {
-          orderID: action.payload
         })
       default:
         return state;

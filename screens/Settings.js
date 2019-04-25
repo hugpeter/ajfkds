@@ -4,18 +4,17 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
-  Switch,
-  View,
   Picker,
-  Linking
+  Linking,
+  View,
+  TouchableOpacity
 } from 'react-native';
 import { withNamespaces } from 'react-i18next';
 import { login } from '../actions/login';
-import { Button, Input, CheckBox, colors } from 'react-native-elements';
+import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { invalidateCache } from 'redux-cache';
-import { Location, TaskManager, Permissions } from 'expo';
-import { composeInitialProps } from 'react-i18next/src';
+import colors from '../constants/Colors';
 
 class SettingsScreen extends React.Component {
   static navigationOptions = ({navigation, screenProps }) => ({
@@ -30,15 +29,15 @@ class SettingsScreen extends React.Component {
   componentDidUpdate(){
     const { count, language } = this.state;
 
-    if(Platform.OS = 'ios'){
+    // if(Platform.OS = 'ios'){
       console.log('did update: ' + language);
-    } else {
-      if(count == 1){
-        console.log('did update: ' + language);
-      } else if(count > 1){
-        this.setState({count: 0});
-      }
-    }
+    // } else {
+    //   if(count == 1){
+    //     console.log('did update: ' + language);
+    //   } else if(count > 1){
+    //     this.setState({count: 0});
+    //   }
+    // }
   }
 
   getCount = () => {
@@ -53,45 +52,50 @@ class SettingsScreen extends React.Component {
         style={styles.container}
         behavior="padding"
       >
-        <Text style={styles.text}>{t('settings:chooseLanguage')}</Text>
-        <Picker
-            selectedValue={this.state.language}
-            style={styles.twoPickers}
-            itemStyle={styles.twoPickerItems}
-            onValueChange={(itemValue, itemIndex) => {
-              var count = this.getCount();
+        <View style={{width: '100%', flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{fontWeight: "bold", color: colors.chechGreen, marginBottom: 10}}>{t('settings:chooseLanguage')}</Text>
+          <Picker
+              selectedValue={this.state.language}
+              style={styles.twoPickers}
+              itemStyle={styles.twoPickerItems}
+              onValueChange={(itemValue, itemIndex) => {
+                // var count = this.getCount();
 
-              if(Platform.OS = 'ios'){
-                this.setState({language: itemValue});
-                i18n.changeLanguage(itemValue);
-              } else {
-                if(count==0){
-                  this.setState({language: itemValue, count: ++count});
+                // if(Platform.OS = 'ios'){
+                  this.setState({language: itemValue});
                   i18n.changeLanguage(itemValue);
-                } else {
-                  this.setState({count: ++count});
-                }
-              }
+                // } else {
+                //   if(count==0){
+                //     this.setState({language: itemValue, count: ++count});
+                //     i18n.changeLanguage(itemValue);
+                //   } else {
+                //     this.setState({count: ++count});
+                //   }
+                // }
+              }}
+            >
+              <Picker.Item label={t('settings:languages.english')} value="en" />
+              <Picker.Item label={t('settings:languages.spanish')} value="es" />
+          </Picker>
+        </View>
+        
+        <TouchableOpacity
+            onPress={()=>{
+              this.props.logOut();
+              navigation.navigate('Auth');
             }}
-          >
-            <Picker.Item label={t('settings:languages.english')} value="en" />
-            <Picker.Item label={t('settings:languages.spanish')} value="es" />
-        </Picker>
-        <Button 
-          onPress={()=>{
-            this.props.logOut();
-            navigation.navigate('Auth');
-          }}
-          title={t('settings:logOut')}
-          buttonStyle={styles.button}
-        />
-        <Button 
-          title={t('settings:privacyPolicy')}
-          onPress={()=>{
-            Linking.openURL('http://biossoft.net/biossoft/PrivacyPolicy/PEWprivacypolicy.html')
-          }}
-          buttonStyle={styles.button}
-        />
+            style={styles.logout}
+        >
+          <Text style={{color: colors.chechRed, fontWeight: 'bold'}}>{t('settings:logOut')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+            onPress={()=>{
+              Linking.openURL('http://biossoft.net/biossoft/PrivacyPolicy/PEWprivacypolicy.html')
+            }}
+            style={styles.privacypolicy}
+        >
+          <Text style={{color: colors.black, fontWeight: 'bold'}}>{t('settings:privacyPolicy')}</Text>
+        </TouchableOpacity>
       </KeyboardAvoidingView>
     );
   }
@@ -101,26 +105,10 @@ class SettingsScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f7f5f2',
+    backgroundColor: colors.offWhite,
     alignItems: 'center',
     justifyContent: 'space-around',
     padding: 20
-  },
-  fetchingContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'space-evenly'
-  },
-  logo: {
-    borderRadius: 5,
-    marginBottom: 20
-  },
-  checkbox: {
-    marginBottom: 10
-  },
-  input: {
-    marginBottom: 10
   },
   twoPickers: {
     width: '80%',
@@ -130,18 +118,34 @@ const styles = StyleSheet.create({
   },
   twoPickerItems: {
     height: 132,
-    borderWidth: 0.5,
-    borderColor: '#d3f3ff',
+    borderWidth: 2,
+    borderColor: colors.chechGreen,
     borderRadius: 10
   },
-  button: {
-    backgroundColor: 'black',
-    width: 300,
-    height: 45,
-    marginBottom: 10,
-    borderColor: 'transparent',
-    borderWidth: 0,
-    borderRadius: 5
+  logout: {
+    width: '80%', 
+    backgroundColor: 'transparent', 
+    borderRadius: 10, 
+    borderWidth: 2,
+    borderColor: colors.chechRed,
+    height: '10%',
+    marginBottom: 20,
+    marginTop: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  privacypolicy: {
+    width: '80%', 
+    backgroundColor: 'transparent', 
+    borderRadius: 10, 
+    borderWidth: 2,
+    borderColor: colors.black,
+    height: '10%',
+    marginBottom: 50,
+
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
 

@@ -1,9 +1,11 @@
 import fetch from 'cross-fetch';
+import axios from 'axios';
 import conn from '../constants/dbConn';
 
 export const DISPATCH_LIST_LOADING = 'DISPATCH_LIST_LOADING';
 export const DISPATCH_LIST = 'DISPATCH_LIST';
 export const DISPATCH_LIST_ERROR = 'DISPATCH_LIST_ERROR';
+export const UPDATE_ORDER_ID = 'UPDATE_ORDER_ID';
 
 export function DispatchListLoading(bool){
     return { 
@@ -26,16 +28,30 @@ export function DispatchListError(bool){
     }
 }
 
+export function newOrderId(id){
+  return { 
+    type: UPDATE_ORDER_ID,
+    payload: id 
+  }
+}
+
+export function updateOrderId(id){
+  return(dispatch) => {
+    dispatch(newOrderId(id));
+  }
+}
+
 export function GetDispatchList(lng) {
     return (dispatch) => {
         dispatch(DispatchListLoading(true));
-  
+
         var options = {
           headers: {
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache'
           },
-          method: 'POST',
+          type: 'application/json',
+          method: 'post',
           body: JSON.stringify({
                 LanguageCode: lng
             })
@@ -58,14 +74,16 @@ export function GetDispatchList(lng) {
         .then(json =>
           //update login state with successful login data
           {
-              console.log(json);
               if(json){
-                dispatch(DispatchList(json));
+                var dispatchList = json.body;
+                dispatch(DispatchList(dispatchList));
               }
           }
         )
         .catch(error => {
-          console.log('There has been a problem with your fetch operation: ' + error.message);
+          console.log('------------------Failed Fetch Operation for (dispatch.js)------------------');
+          console.log(error.stack);
+
         });
     }
 }

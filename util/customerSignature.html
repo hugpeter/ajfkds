@@ -1,0 +1,311 @@
+<html>
+<head>
+<script type="text/javascript">
+    var canvas,ctx;
+
+    var mouseX,mouseY,mouseDown=0;
+
+    var touchX,touchY;
+
+    var lastX,lastY=-1;
+
+    var brushSize = 3;
+
+    function drawLine(ctx,x,y,size) {
+
+        if (lastX==-1) {
+            lastX=x;
+	        lastY=y;
+        }
+
+        r=0; g=0; b=0; a=255;
+
+        ctx.strokeStyle = "rgba("+r+","+g+","+b+","+(a/255)+")";
+
+        ctx.lineCap = "round";
+
+        ctx.beginPath();
+
+	ctx.moveTo(lastX,lastY);
+
+	ctx.lineTo(x,y);
+
+        ctx.lineWidth = size;
+        ctx.stroke();
+
+        ctx.closePath();
+
+	lastX=x;
+	lastY=y;
+    } 
+
+    function clearCanvas(canvas,ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function sketchpad_mouseDown() {
+        mouseDown=1;
+        drawLine(ctx,mouseX,mouseY,brushSize);
+    }
+
+    function sketchpad_mouseUp() {
+        mouseDown=0;
+
+        lastX=-1;
+        lastY=-1;
+    }
+
+    function sketchpad_mouseMove(e) { 
+        getMousePos(e);
+
+        if (mouseDown==1) {
+            drawLine(ctx,mouseX,mouseY,brushSize);
+        }
+    }
+
+    function getMousePos(e) {
+        if (!e)
+            var e = event;
+
+        if (e.offsetX) {
+            mouseX = e.offsetX;
+            mouseY = e.offsetY;
+        }
+        else if (e.layerX) {
+            mouseX = e.layerX;
+            mouseY = e.layerY;
+        }
+    }
+
+    function sketchpad_touchStart() {
+        getTouchPos();
+
+        drawLine(ctx,touchX,touchY,brushSize);
+
+        event.preventDefault();
+    }
+
+    function sketchpad_touchEnd() {
+        lastX=-1;
+        lastY=-1;
+    }
+
+    function sketchpad_touchMove(e) { 
+        getTouchPos(e);
+
+        drawLine(ctx,touchX,touchY,brushSize); 
+
+        event.preventDefault();
+    }
+
+    function getTouchPos(e) {
+        if (!e)
+            var e = event;
+
+        if(e.touches) {
+            if (e.touches.length == 1) { 
+                var touch = e.touches[0];
+                touchX=touch.pageX-touch.target.offsetLeft;
+                touchY=touch.pageY-touch.target.offsetTop;
+            }
+        }
+    }
+
+    function init() {
+        canvas = document.getElementById('signaturePad');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        if (canvas.getContext)
+            ctx = canvas.getContext('2d');
+
+        if (ctx) {
+
+            canvas.addEventListener('mousedown', sketchpad_mouseDown, false);
+            canvas.addEventListener('mousemove', sketchpad_mouseMove, false);
+            window.addEventListener('mouseup', sketchpad_mouseUp, false);
+
+            canvas.addEventListener('touchstart', sketchpad_touchStart, false);
+            canvas.addEventListener('touchend', sketchpad_touchEnd, false);
+            canvas.addEventListener('touchmove', sketchpad_touchMove, false);
+        }
+    }
+
+    function dataURItoBlob(dataURI){
+        var byteString;
+
+        if(dataURI.split(',')[0].indexOf('base64') >= 0){
+            byteString = atob(dataURI.split(',')[1]);
+        } else {
+            byteString = encodeURI(dataURI.split(',')[1]);
+        }
+
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    
+        var ia = new Uint8Array(byteString.length);
+        for (var i = 0; i < byteString.length; i++){
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ia], {type:mimeString});
+    }
+
+    function saveImageRemote(canvas) {
+        var info = document.querySelector('#myContent').innerHTML.split('_');
+        var orderId = info[0];
+        var token = info[1];
+        var dataURL = canvas.toDataURL();
+        var signatureBlob = dataURItoBlob(dataURL);
+        
+        var XHR = new XMLHttpRequest();
+        var FD = new FormData();
+
+        FD.append('image', signatureBlob);
+
+        FD.append('salesOrderId', orderId);
+
+        FD.append('imageType', 'c');
+
+        XHR.open('POST', 'http://192.168.111.64/Kiosco.Services.Api/api/SalesOrder/CreateOrderDeliveryLog');
+
+        XHR.onreadystatechange = function (){
+            if(XHR.readyState === 4){
+                document.querySelector("#successMsg").style.display = "inline";
+                document.querySelector("#loading").style.display = "none";
+            } 
+        };
+
+        XHR.setRequestHeader('Accept', 'application/json');
+        
+        XHR.send(FD);
+
+        document.querySelector("#loading").style.display = "inline";
+        document.querySelector("#clearbutton").style.display = "none";
+        document.querySelector("#savebutton").style.display = "none";
+        document.querySelector("#signaturePad").style.display = "none";
+    }
+</script>
+
+<style>
+body{
+    padding: 0;
+    margin: 0;
+}
+
+#signatureScreen {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#signaturePad {
+    float:left;
+    margin: 0;
+    position:relative; 
+}
+
+#successMsg,
+#loading {
+    text-align: center;
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: 50%;
+    margin-top: -200px;
+    left: 50%;
+    margin-left: -200px;
+    font-size: 3em;
+    z-index: 99;
+    border-width: 2px;
+    border-color: 'black';
+    background-color: 'green';
+    overflow: auto;
+    
+    display: none;
+}
+
+#clearbutton,
+#savebutton {
+    width: 60px;
+    height: 60px;
+    -webkit-appearance: none;
+    position: absolute;
+    z-index: 99;
+}
+
+#clearbutton {
+    top: 20px;
+    left: 20px;
+}
+
+#savebutton {
+    top: 20px;
+    right: 20px;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
+
+#myContent {
+    display: none;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(odeg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+#loading {
+    animation-name: rotate;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+#successMsg{
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+}
+
+</style>
+</head>
+
+<body onload="init()">
+    <div id="signatureScreen">
+        <div id="myContent"></div>
+        <input type="image" src="../assets/images/delete.png" id="clearbutton" alt="Submit" onclick="clearCanvas(canvas,ctx);">
+        <input type="image" src="../assets/images/save.png" id="savebutton" alt="Submit" onclick='saveImageRemote(canvas);'>
+        <img src="../assets/images/success.png" id="successMsg" />
+        <img src="../assets/images/loading.png" id="loading" />
+        
+        <canvas id="signaturePad" height="100%" width="100%"></canvas>
+    </div>
+</body>
+</html>

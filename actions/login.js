@@ -4,14 +4,6 @@ import conn from '../constants/dbConn';
 export const REQUEST_SESSION = 'REQUEST_SESSION';
 export const SESSION = 'SESSION';
 export const SESSION_HAS_ERROR = 'SESSION_HAS_ERROR';
-export const UPDATE_ORDER_ID = 'UPDATE_ORDER_ID';
-
-export function newOrderId(id){
-  return { 
-    type: UPDATE_ORDER_ID,
-    payload: id 
-  }
-}
 
 export function sessionHasError(bool) {
   return {
@@ -34,12 +26,6 @@ export function sessionFetchDataSuccess(session) {
   };
 }
 
-export function updateOrderId(id){
-  return(dispatch) => {
-    dispatch(newOrderId(id));
-  }
-}
-
 export function login(username, password) {
   return (dispatch) => {
       dispatch(sessionIsLoading(true));
@@ -49,7 +35,7 @@ export function login(username, password) {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache'
         },
-        method: 'POST',
+        method: 'post',
         body: JSON.stringify({
               Username: username,
               Password: password
@@ -77,7 +63,7 @@ export function login(username, password) {
             if(json){
               dispatch(sessionFetchDataSuccess(json));
             }
-        }
+        } 
       );
   }
 }

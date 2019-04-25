@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     token: state.login.token,
-    orderID: state.login.orderID
+    orderID: state.dispatch.orderID
   }
 }
 

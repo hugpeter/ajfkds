@@ -19,24 +19,31 @@ export function UploadingMediaError(bool){
 }
 
 //add a signature image, or profile 
-export function UpdateVendorPackageStatus(lng, salesOrderId, signatureUrl) {
+export function vendorSignature(uri, orderID, token) {
     return (dispatch) => {
         dispatch(StatusUpdating(true));
+
+        //create formdata object
+        const formData = new FormData();
+        var metaData = orderID + '_v_signature';
+
+        formData.append(metaData, {
+          uri: uri,
+          type: 'image/jpeg'
+        });
   
         var options = {
           headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache'
+            'Accept' : 'application/json',
+            'Content-Type': 'multipart/form-data',
+            'Cache-Control': 'no-cache',
+            'Authorization': 'Bearer ' + token
           },
-          method: 'POST',
-          body: JSON.stringify({
-                LanguageCode: lng,
-                SalesOrderId: salesOrderId,
-                DeliveryStatusId: deliveryStatusId
-            })
+          method: 'post',
+          body: formData
         }
   
-        fetch(`${conn}/SalesOrder/UpdateOrderDeliveryStatus`, options)
+        fetch(`${conn}/SalesOrder/CreateOrderDeliveryLog`, options)
         .then(response => {
             console.log(response.status);
             if(response.status != 200){

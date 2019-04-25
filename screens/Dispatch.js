@@ -2,191 +2,17 @@ import React from 'react';
 import {
   StyleSheet,
   Text,
-  TextInput,
   View,
-  ScrollView,
   FlatList,
   TouchableOpacity,
-  Platform,
   Dimensions,
-  Clipboard
+  ActivityIndicator
 } from 'react-native';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
-import { updateOrderId } from '../actions/login';
-import { GetDispatchList } from '../actions/dispatch';
-
-const fakeData = [
-  {
-    orderId: '123',
-    vendorNumber: 1,
-    confirmationNumber: 329382,
-    date: '15/02/19',
-    numPickups: 3,
-    items: [
-      {
-        itemId: '2019.3213.235655.2123',
-        qty: 2
-      },
-      {
-        itemId: '2019.34513.212355.2123',
-        qty: 3
-      },
-      {
-        itemId: '2019.3213.216655.2123',
-        qty: 1
-      }
-    ],
-    vendor: 'Distribuidora ABC, S.A.',
-    address: '1234 Huntington Drive Panama, Panama',
-    email: 'vendorABC@distribuidora.com',
-    phone: '507-6193-9320'
-  },
-  {
-    orderId: '133',
-    date: '15/02/19',
-    vendorNumber: 2,
-    confirmationNumber: 329382,
-    numPickups: 1,
-    items: [
-      {
-        itemId: '2024.34513.212355.2123',
-      }
-    ],
-    vendor: 'Dist A',
-    address: '448927 Frisbee Ultimate Panama, Panama',
-    email: 'vendorasd@distribuidora.com',
-    phone: '507-6193-9320'
-  },
-  {
-    orderId: '14',
-    date: '16/02/19',
-    vendorNumber: 4,
-    confirmationNumber: 329382,
-    numPickups: 1,
-    items: [
-      {
-        itemId: '2019.3213.2543355.25553',
-      }
-    ],
-    vendor: 'wooden, S.A.',
-    address: '1111 asfgasdfewdsa Panama, Panama',
-    email: 'vendoraa@distribuidora.com',
-    phone: '507-6193-9320'
-  },
-  {
-    orderId: '14442',
-    date: '16/02/19',
-    vendorNumber: 2,
-    confirmationNumber: 329382,
-    numPickups: 5,
-    items: [
-      {
-        itemId: '2019.3213.212355.2123',
-      },
-      {
-        itemId: '2019.3213.212355.2123',
-      },
-      {
-        itemId: '2019.3213.2534355.2123',
-      },
-      {
-        itemId: '2019.3213.223355.2133',
-      },
-      {
-        itemId: '2019.34443.2122355.423',
-      }
-    ],
-    vendor: 'stuff, S.A.',
-    address: '4499 Juice Carrot Panama, Panama',
-    email: 'asdf@distribuidora.com',
-    phone: '507-6193-9320'
-  },
-  {
-    orderId: '1543',
-    date: '16/02/19',
-    vendorNumber: 7,
-    confirmationNumber: 329382,
-    numPickups: 8,
-    items: [
-      {
-        itemId: '2019.3213.212355.323',
-      },
-      {
-        itemId: '2019.3213.212355.243',
-      },
-      {
-        itemId: '2019.3213.212355.253',
-      },
-      {
-        itemId: '2019.3213.2555.2123',
-      },
-      {
-        itemId: '2019.3213.2164555.21523',
-      },
-      {
-        itemId: '2019.3213.24355.2153',
-      },
-      {
-        itemId: '2019.3213.2156355.6423',
-      },
-      {
-        itemId: '2019.3213.234355.2223',
-      }
-    ],
-    vendor: 'Safari Outfitters, S.A.',
-    address: '1343 Toilet Road Panama, Panama',
-    email: 'fffffff@distribuidora.com',
-    phone: '507-6193-9320'
-  },
-  {
-    orderId: '234224',
-    date: '16/02/19',
-    vendorNumber: 24,
-    confirmationNumber: 329382,
-    numPickups: 3,
-    items: [
-      {
-        itemId: '2019.3213.2342355.2123',
-      },
-      {
-        itemId: '2019.3213.212355.2123',
-      },
-      {
-        itemId: '2019.3213.212355.2123',
-      }
-    ],
-    vendor: 'Pizza Planet',
-    address: '289534 Pizza Drive Panama, Panama',
-    email: 'hahaha@distribuidora.com',
-    phone: '507-6193-9320'
-  },
-  {
-    orderId: '7789',
-    date: '17/02/19',
-    vendorNumber: 12,
-    confirmationNumber: 329382,
-    numPickups: 4,
-    items: [
-      {
-        itemId: '2019.3213.212355.2123',
-      },
-      {
-        itemId: '2019.3213.212355.2123',
-      },
-      {
-        itemId: '2019.3213.212355.2123',
-      },
-      {
-        itemId: '2019.3213.212355.2123',
-      }
-    ],
-    vendor: 'Super 99',
-    address: '37854 Drive Panama, Panama',
-    email: 'sdefsad@distribuidora.com',
-    phone: '507-6193-9320'
-  }
-]
+import { GetDispatchList, updateOrderId } from '../actions/dispatch';
+import timeConverter from '../util/timeConvert';
+import colors from '../constants/Colors';
 
 var { width } = Dimensions.get('window');
 
@@ -204,15 +30,11 @@ class DispatchScreen extends React.Component {
   }
 
   componentDidMount = () => {
-    const { dispatchList, i18n } = this.props;
+    const { GetDispatches, i18n } = this.props;
 
     const lng = i18n.language;
     
-    dispatchList(lng);
-  }
-
-  setClipboardContent = (txt) => {
-    Clipboard.setString(txt);
+    GetDispatches(lng);
   }
 
   updateOrderId = (id) => {
@@ -220,86 +42,114 @@ class DispatchScreen extends React.Component {
     updateOrder(id);
   }
 
-  render() {
-    const { t, orderID, isFetching, hasError} = this.props;
-    const { indexSelected } = this.state;
+  onRefresh = () => {
+    const { GetDispatches, i18n } = this.props;
+
+    const lng = i18n.language;
     
-    return (
-      <View
-        style={styles.container}
-      >
-        <View style={styles.flatList}>
+    GetDispatches(lng);
+    this.setState({indexSelected: -1});
+  }
+
+  render() {
+    const { t, orderID, isFetching, i18n, hasError, dispatchList} = this.props;
+    const { language } = i18n;
+    const { indexSelected } = this.state;
+
+    if(hasError){
+
+    }
+
+    if(dispatchList){
+      if(dispatchList.length > 0){
+        return (
           <View
-            style={styles.pickupsHeader}   
+            style={styles.container}
           >
-                <Text style={[styles.data, {fontWeight: 'bold',}]}>{t('dispatch:date')}</Text>
-                <Text style={[styles.data, {fontWeight: 'bold',}]}>{t('dispatch:vendorNumber')}</Text>
-                <Text style={[styles.data, {fontWeight: 'bold',}]}>{t('dispatch:numPickups')}</Text>
+            <View style={styles.flatList}>
+              <View
+                style={styles.pickupsHeader}   
+              >
+                    <Text style={[styles.data, {fontWeight: 'bold',}]}>{t('dispatch:date')}</Text>
+                    <Text style={[styles.data, {fontWeight: 'bold',}]}>{t('dispatch:vendorNumber')}</Text>
+                    <Text style={[styles.data, {fontWeight: 'bold',}]}>{t('dispatch:orderId')}</Text>
+              </View>
+              <FlatList
+                data={dispatchList}
+                onRefresh={this.onRefresh}
+                refreshing={isFetching}
+                initialNumToRender={10}
+                showsHorizontalScrollIndicator={false}
+                numColumns={1}
+                keyExtractor={(item, index) => `${index}`}
+                ItemSeparatorComponent={({highlighted}) => (
+                  <View style={styles.separator}></View>
+                )}
+                renderItem={({item, index, separators}) => {
+                  if(index == indexSelected){
+                    return (
+                      <TouchableOpacity
+                        style={styles.pickupsSelected}
+                        onShowUnderlay={separators.highlight}
+                        onHideUnderlay={separators.unhighlight}
+                        onPress={()=>{
+                          this.setState({
+                            vendor: item.vendorName,
+                            address: item.vendorAddress,
+                            email: item.vendorEmail,
+                            phone: item.vendorPhone
+                          })
+                        }}
+                      >
+                        <Text style={styles.data}>{timeConverter(item.createdDateTime, language)}</Text>
+                        <Text style={styles.data}>{item.vendorId}</Text>
+                        <Text style={styles.data}>{item.orderId}</Text>
+                      </TouchableOpacity>
+                    )
+                  } else {
+                    return (
+                      <TouchableOpacity
+                        style={styles.pickups}
+                        onShowUnderlay={separators.highlight}
+                        onHideUnderlay={separators.unhighlight}
+                        onPress={()=>{
+                          this.updateOrderId(item.orderId);
+                          this.setState({
+                            vendor: item.vendorName,
+                            address: item.vendorAddress,
+                            email: item.vendorEmail,
+                            phone: item.vendorPhone,
+                            indexSelected: index
+                          });
+                        }}
+                      >
+                        <Text style={styles.data}>{timeConverter(item.createdDateTime, language)}</Text>
+                        <Text style={styles.data}>{item.vendorId}</Text>
+                        <Text style={styles.data}>{item.orderId}</Text>
+                      </TouchableOpacity>
+                    )
+                  }
+                }}
+              />
+            </View>
+            <View style={styles.vendorInfo}>
+              <Text selectable style={[styles.vendorData, {fontWeight: 'bold'}]}>{this.state.vendor}</Text>
+              <Text selectable style={[styles.vendorData]}>{this.state.address}</Text>
+              <Text selectable style={[styles.vendorData]}>{this.state.email}</Text>
+              <Text selectable style={[styles.vendorData]}>{this.state.phone}</Text>
+            </View>
           </View>
-          <FlatList
-            data={fakeData}
-            initialNumToRender={10}
-            showsHorizontalScrollIndicator={false}
-            numColumns={1}
-            keyExtractor={(item, index) => `${index}`}
-            ItemSeparatorComponent={({highlighted}) => (
-              <View style={styles.separator}></View>
-            )}
-            renderItem={({item, index, separators}) => {
-              if(index == indexSelected){
-                return (
-                  <TouchableOpacity
-                    style={styles.pickupsSelected}
-                    onShowUnderlay={separators.highlight}
-                    onHideUnderlay={separators.unhighlight}
-                    onPress={()=>{
-                      this.setState({
-                        vendor: item.vendor,
-                        address: item.address,
-                        email: item.email,
-                        phone: item.phone
-                      })
-                    }}
-                  >
-                    <Text style={styles.data}>{item.date}</Text>
-                    <Text style={styles.data}>{item.vendorNumber}</Text>
-                    <Text style={styles.data}>{item.numPickups}</Text>
-                  </TouchableOpacity>
-                )
-              } else {
-                return (
-                  <TouchableOpacity
-                    style={styles.pickups}
-                    onShowUnderlay={separators.highlight}
-                    onHideUnderlay={separators.unhighlight}
-                    onPress={()=>{
-                      this.updateOrderId(item.orderId);
-                      this.setState({
-                        vendor: item.vendor,
-                        address: item.address,
-                        email: item.email,
-                        phone: item.phone,
-                        indexSelected: index
-                      });
-                    }}
-                  >
-                    <Text style={styles.data}>{item.date}</Text>
-                    <Text style={styles.data}>{item.vendorNumber}</Text>
-                    <Text style={styles.data}>{item.numPickups}</Text>
-                  </TouchableOpacity>
-                )
-              }
-            }}
-          />
-        </View>
-        <View style={styles.vendorInfo}>
-          <Text selectable style={[styles.vendorData, {fontWeight: 'bold'}]}>{this.state.vendor}</Text>
-          <Text selectable style={[styles.vendorData]}>{this.state.address}</Text>
-          <Text selectable style={[styles.vendorData]}>{this.state.email}</Text>
-          <Text selectable style={[styles.vendorData]}>{this.state.phone}</Text>
-          <Text>{orderID}</Text>
-        </View>
+        );
+      }
+    }
+
+    return(
+    <View style={styles.loadingContainer}>
+      <View style={{alignItems: 'center', justifyContent: 'space-between', height: '20%'}}>
+        <Text>{t('dispatch:loading')}</Text>
+        <ActivityIndicator size='large' color={colors.chechGreen} />
       </View>
+    </View>
     );
   }
 }
@@ -310,6 +160,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     
+  },
+  loadingContainer:{
+    flex:1,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: colors.offWhite
   },
   pickups: {
     flexDirection: 'row',
@@ -324,7 +180,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     padding: 10,
-    backgroundColor: '#d3f3ff'
+    backgroundColor: colors.chechGreen
   },
   pickupsHeader: {
     flexDirection: 'row',
@@ -333,8 +189,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     padding: 10,
     marginTop: 5,
-    borderBottomWidth: 5,
-    borderColor: '#efece8'
+    borderBottomWidth: 1,
+    borderColor: colors.chechGreen
   },
   data: {
     width: width/3,
@@ -344,7 +200,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: 1,
     width: width,
-    backgroundColor: '#efece8'
+    backgroundColor: colors.darkGray
   },
   flatList:{
     flex:1,
@@ -353,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     borderBottomWidth: 5,
-    borderColor: '#efece8'
+    borderColor: colors.darkGray
   },
   vendorInfo:{
     flex:1,
@@ -361,7 +217,7 @@ const styles = StyleSheet.create({
     padding: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f7f5f2'
+    backgroundColor: colors.offWhite
   },
   vendorData:{
     margin: 2.5,
@@ -370,10 +226,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  console.log(state.dispatch.dispatchList);
   return {
     token: state.login.token,
-    orderID: state.login.orderID,
+    orderID: state.dispatch.orderID,
     isFetching: state.dispatch.isFetching,
     hasError: state.dispatch.hasError,
     dispatchList: state.dispatch.dispatchList
@@ -385,7 +240,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateOrder: (orderID) => {
       dispatch(updateOrderId(orderID));
     },
-    dispatchList: (lng) => {
+    GetDispatches: (lng) => {
       dispatch(GetDispatchList(lng));
     }
   }
