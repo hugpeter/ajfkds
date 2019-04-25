@@ -11,6 +11,9 @@
 
     var brushSize = 3;
 
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
     function drawLine(ctx,x,y,size) {
 
         if (lastX==-1) {
@@ -113,9 +116,11 @@
 
     function init() {
         canvas = document.getElementById('signaturePad');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
 
+        alert(width);
+        alert(height);
         if (canvas.getContext)
             ctx = canvas.getContext('2d');
 
@@ -210,20 +215,15 @@ body{
 #successMsg,
 #loading {
     text-align: center;
-    width: 400px;
-    height: 400px;
+    width: 20vw;
+    height: 20vw;
     position: absolute;
     top: 50%;
-    margin-top: -200px;
+    margin-top: -10vw;
     left: 50%;
-    margin-left: -200px;
-    font-size: 3em;
+    margin-left: -10vw;
     z-index: 99;
-    border-width: 2px;
-    border-color: 'black';
-    background-color: 'green';
     overflow: auto;
-    
     display: none;
 }
 
