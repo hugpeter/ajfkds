@@ -10,8 +10,6 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { withNamespaces } from 'react-i18next';
-import { login } from '../actions/login';
-import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { invalidateCache } from 'redux-cache';
 import colors from '../constants/Colors';

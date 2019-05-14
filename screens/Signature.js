@@ -1,23 +1,12 @@
 import React from 'react';
-import { takeSnapshotAsync, Permissions, Icon, MediaLibrary, } from 'expo';
 import vsig from '../util/vendorSignature.html';
 import csig from '../util/customerSignature.html';
 import {
-  Alert,
-  PanResponder,
-  SafeAreaView,
-  ScrollView,
-  Slider,
   StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  CameraRoll,
   WebView
 } from 'react-native';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
-import colors from '../constants/Colors';
 
 class SignatureScreen extends React.Component {
   static navigationOptions = ({navigation, screenProps }) => ({

@@ -3,15 +3,12 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   FlatList,
   TouchableOpacity,
-  Platform,
   Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
 import { withNamespaces } from 'react-i18next';
-import timeConverter from '../util/timeConvert';
 import colors from '../constants/Colors';
 
 var { width } = Dimensions.get('window');
@@ -39,7 +36,7 @@ class PickupScreen extends React.Component {
     var items = [];
 
     array.map((item) => items.push({
-      itemId: item.id,
+      salesOrderId: item.id,
       qty: item.purchQty
     }));
 
@@ -76,12 +73,12 @@ class PickupScreen extends React.Component {
                 style={styles.pickups}
                 onPress={()=>{
                   navigation.navigate('Scanner', {
-                      item: item
+                      Id: item.salesOrderId
                   })
   
                 }}
               >
-                <Text style={styles.data}>{item.itemId}</Text>
+                <Text style={styles.data}>{item.salesOrderId}</Text>
                 <Text style={styles.data}>{item.qty}</Text>
               </TouchableOpacity>
             )}

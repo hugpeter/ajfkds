@@ -64,7 +64,12 @@ export function login(username, password) {
               dispatch(sessionFetchDataSuccess(json));
             }
         } 
-      );
+      )
+      .catch(error => {
+        console.log('------------------Failed Login (login.js)------------------');
+        console.log(error.stack);
+        console.log('-------------------------END ERROR-------------------------');
+      });
   }
 }
 

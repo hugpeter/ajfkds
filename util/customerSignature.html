@@ -9,7 +9,10 @@
 
     var lastX,lastY=-1;
 
-    var brushSize = 3;
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
+    var brushSize = (width - 320)*(5-1.5)/(980 - 320) + 1.5;;
 
     function drawLine(ctx,x,y,size) {
 
@@ -113,8 +116,8 @@
 
     function init() {
         canvas = document.getElementById('signaturePad');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
 
         if (canvas.getContext)
             ctx = canvas.getContext('2d');
@@ -151,33 +154,48 @@
     }
 
     function saveImageRemote(canvas) {
+        var startTime, endTime;
+
         var info = document.querySelector('#myContent').innerHTML.split('_');
         var orderId = info[0];
         var token = info[1];
+
         var dataURL = canvas.toDataURL();
         var signatureBlob = dataURItoBlob(dataURL);
         
         var XHR = new XMLHttpRequest();
         var FD = new FormData();
 
+        FD.append('token', token);
+        
         FD.append('image', signatureBlob);
 
         FD.append('salesOrderId', orderId);
 
         FD.append('imageType', 'c');
 
-        XHR.open('POST', 'http://192.168.111.64/Kiosco.Services.Api/api/SalesOrder/CreateOrderDeliveryLog');
-
+        XHR.open('POST', 'https://checheritos.com/Kiosco.Services.Api/api/SalesOrder/CreateOrderDeliveryLog');
+        XHR.timeout = 30000;
         XHR.onreadystatechange = function (){
             if(XHR.readyState === 4){
-                document.querySelector("#successMsg").style.display = "inline";
+                endTime = new Date();
+                var timeDiff = endTime - startTime;
+                timeDiff /= 1000;
+
+                if(timeDiff > 0 && timeDiff < 29){
+                    document.querySelector("#successMsg").style.display = "inline";
+                } else {
+                    document.querySelector("#failureMsg").style.display = "inline";
+                }
+
                 document.querySelector("#loading").style.display = "none";
             } 
         };
 
         XHR.setRequestHeader('Accept', 'application/json');
-        
+
         XHR.send(FD);
+        startTime = new Date();
 
         document.querySelector("#loading").style.display = "inline";
         document.querySelector("#clearbutton").style.display = "none";
@@ -223,14 +241,13 @@ body{
     border-color: 'black';
     background-color: 'green';
     overflow: auto;
-    
     display: none;
 }
 
 #clearbutton,
 #savebutton {
-    width: 60px;
-    height: 60px;
+    width: 10vw;
+    height: 10vw;
     -webkit-appearance: none;
     position: absolute;
     z-index: 99;

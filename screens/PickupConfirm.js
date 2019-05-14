@@ -3,10 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
-  FlatList,
   TouchableOpacity,
-  Platform,
   Dimensions
 } from 'react-native';
 import { connect } from 'react-redux';
@@ -23,45 +20,69 @@ class PickupConfirmScreen extends React.Component {
     gesturesEnabled: false
   });
 
-  getOrderInfo = (orderId) => {
-    const { dispatchList } = this.props;
-
-    return dispatchList.filter(function(d){ return d.orderId == orderId;})[0];
-  }
-
   render() {
     const { t, i18n, navigation, orderID} = this.props;
-    const { item, scanInfo } = this.props.navigation.state.params;
-    const orderInfo = this.getOrderInfo(orderID);
+    const { Id, scanInfo } = this.props.navigation.state.params;
 
-    if(item.itemId == scanInfo.itemId && orderInfo.orderId == scanInfo.orderId){
-      return (
-        <View
-          style={styles.container}
-        >
+    if(scanInfo && typeof scanInfo === 'object'){
+      if(Id == scanInfo.Id){
+        return (
           <View
-            style={styles.msg}
+            style={styles.container}
           >
-            <Icon.Ionicons
-              name={'ios-checkmark-circle'}
-              size={100}
-              color={colors.chechGreen}
-            />
-            <Text>{t('pickup:success')}</Text>
-          </View>
-          <TouchableOpacity 
-            onPress={()=>{
-              navigation.navigate('Pickup')
-            }}
-          >
-            <Text
-              style={{color: colors.chechGreen, fontWeight: 'bold'}}
+            <View
+              style={styles.msg}
             >
-              {t('pickup:backToList')}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      );
+              <Icon.Ionicons
+                name={'ios-checkmark-circle'}
+                size={100}
+                color={colors.chechGreen}
+              />
+              <Text>{t('pickup:success')}</Text>
+            </View>
+            <TouchableOpacity 
+              onPress={()=>{
+                navigation.navigate('Pickup')
+              }}
+            >
+              <Text
+                style={{color: colors.chechGreen, fontWeight: 'bold'}}
+              >
+                {t('pickup:backToList')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        );
+      } else {
+        return (
+          <View
+            style={styles.container}
+          >
+            <View
+              style={styles.msg}
+            >
+              <Icon.MaterialIcons
+                name={'error'}
+                size={100}
+                color={'red'}
+              />
+              <Text>{t('pickup:failure')}</Text>
+            </View>
+  
+            <TouchableOpacity 
+              onPress={()=>{
+                navigation.navigate('Pickup')
+              }}
+            >
+              <Text
+                style={{color: colors.chechGreen, fontWeight: 'bold'}}
+              >
+                {t('pickup:backToList')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }
     } else {
       return (
         <View
@@ -92,6 +113,7 @@ class PickupConfirmScreen extends React.Component {
         </View>
       );
     }
+    
   }
 
   _signaturePadError = (error) => {

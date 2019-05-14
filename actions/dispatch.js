@@ -41,14 +41,15 @@ export function updateOrderId(id){
   }
 }
 
-export function GetDispatchList(lng) {
+export function GetDispatchList(lng, token) {
     return (dispatch) => {
         dispatch(DispatchListLoading(true));
 
         var options = {
           headers: {
             'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache'
+            'Cache-Control': 'no-cache',
+            'Authorization': 'Bearer ' + token
           },
           type: 'application/json',
           method: 'post',
@@ -83,7 +84,7 @@ export function GetDispatchList(lng) {
         .catch(error => {
           console.log('------------------Failed Fetch Operation for (dispatch.js)------------------');
           console.log(error.stack);
-
+          console.log('---------------------------------END ERROR-----------------------------------');
         });
     }
 }

@@ -6,7 +6,6 @@ import {
     KeyboardAvoidingView,
     ActivityIndicator,
     AsyncStorage,
-    TextInput,
     Image
 } from 'react-native';
 import { LinearGradient } from 'expo';
@@ -38,9 +37,9 @@ class SignInScreen extends React.Component {
     componentDidMount = () => {
         AsyncStorage.getItem('rememberUsername')
             .then((value) => {
-                if(value.toString() == 'true'){
+                if(value == 'true'){
                     AsyncStorage.getItem('username').then((value) => {
-                        if(value.toString() != ''){
+                        if(value != ''){
                             this.setState({
                                 localUsername: value,
                                 rememberUsername: true
@@ -97,7 +96,7 @@ class SignInScreen extends React.Component {
         }
 
         if(this.props.isFetching){
-            return <View style={styles.fetchingContainer}><Text>{t('login:loggingIn')}</Text><ActivityIndicator size='large' /></View>
+            return <View style={styles.fetchingContainer}><ActivityIndicator size='large' color={c.chechGreen} /></View>
         }
 
         return(
@@ -194,22 +193,21 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0
     },
     button: {
-        backgroundColor: 'transparent',
         width: 300,
         height: 45,
         marginBottom: 10,
         borderColor: c.black,
-        borderWidth: 1,
-        borderRadius: 5
+        borderWidth: 2,
+        borderRadius: 5,
+        backgroundColor: 'transparent'
     }
 });
 
 const mapStateToProps = (state) => {
-    console.log(state.login);
     return {
         isFetching: state.login.isFetching,
         hasError: state.login.hasError,
-        token: state.login.Token
+        token: state.login.token
     }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View, Platform } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import { Icon } from 'expo';
 import { connect } from 'react-redux';
@@ -48,12 +48,21 @@ class Scanner extends React.Component {
 
   handleBarCodeScanned = ({ type, data }) => {
     const { navigation } = this.props;
-    const { item } = this.props.navigation.state.params;
+    const { Id } = this.props.navigation.state.params;
 
     console.log('qr code scanned!');
+    var parsedData;
+    if(data){
+      try {
+        parsedData = JSON.parse(data);
+      } catch(e){
+        parsedData = 'not a json object';
+      }
+    }
+    
     navigation.navigate('PickupConfirm',{
-      scanInfo: JSON.parse(data),
-      item: item
+      scanInfo: parsedData,
+      Id: Id
     });
   }
 }

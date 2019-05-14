@@ -13,7 +13,7 @@
   "dependencies": {
     "@expo/samples": "2.1.1",
     "axios": "^0.18.0",
-    "cross-fetch": "^3.0.1",
+    "cross-fetch": "^2.2.0",
     "expo": "^32.0.0",
     "i18next": "^12.1.0",
     "npm": "^6.8.0",

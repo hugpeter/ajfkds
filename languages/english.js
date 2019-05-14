@@ -3,7 +3,8 @@ const english = {
         user: 'Username',
         password: 'Password',
         rememberUsername: 'Remember Me',
-        login: 'Login'
+        login: 'Login',
+        loginError:'Unrecognized Username or Password'
     },
     navigation: {
         dispatchTab: 'Dispatch',
@@ -16,7 +17,8 @@ const english = {
         date: 'Date',
         vendorNumber: 'Vendor #',
         orderId: 'Order #',
-        loading: 'We are getting your orders to deliver now!'
+        loading: 'We are getting your orders to deliver now!',
+        noDispatches: 'You do not have any deliveries assigned to you at this moment.'
     },
     pickup: {
         title: 'Pick-Up',

@@ -30,11 +30,11 @@ class DispatchScreen extends React.Component {
   }
 
   componentDidMount = () => {
-    const { GetDispatches, i18n } = this.props;
+    const { GetDispatches, i18n, token } = this.props;
 
     const lng = i18n.language;
     
-    GetDispatches(lng);
+    GetDispatches(lng, token);
   }
 
   updateOrderId = (id) => {
@@ -43,11 +43,11 @@ class DispatchScreen extends React.Component {
   }
 
   onRefresh = () => {
-    const { GetDispatches, i18n } = this.props;
+    const { GetDispatches, i18n, token } = this.props;
 
     const lng = i18n.language;
     
-    GetDispatches(lng);
+    GetDispatches(lng, token);
     this.setState({indexSelected: -1});
   }
 
@@ -141,6 +141,14 @@ class DispatchScreen extends React.Component {
           </View>
         );
       }
+    } else {
+      return(
+        <View style={styles.loadingContainer}>
+          <View style={{alignItems: 'center', justifyContent: 'space-between', height: '20%'}}>
+            <Text>{t('dispatch:noDispatches')}</Text>
+          </View>
+        </View>
+        );
     }
 
     return(
@@ -163,6 +171,7 @@ const styles = StyleSheet.create({
   },
   loadingContainer:{
     flex:1,
+    padding: 50,
     alignItems: 'center',
     justifyContent: 'space-around',
     backgroundColor: colors.offWhite
@@ -226,6 +235,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
+
   return {
     token: state.login.token,
     orderID: state.dispatch.orderID,
@@ -240,8 +250,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateOrder: (orderID) => {
       dispatch(updateOrderId(orderID));
     },
-    GetDispatches: (lng) => {
-      dispatch(GetDispatchList(lng));
+    GetDispatches: (lng, token) => {
+      dispatch(GetDispatchList(lng, token));
     }
   }
 }
