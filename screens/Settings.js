@@ -157,7 +157,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     logOut: () => {
       dispatch(invalidateCache([
-        'login'
+        'login',
+        'dispatch'
       ]))
     }
   }

@@ -13,6 +13,7 @@ import { withNamespaces } from 'react-i18next';
 import { GetDispatchList, updateOrderId } from '../actions/dispatch';
 import timeConverter from '../util/timeConvert';
 import colors from '../constants/Colors';
+import { invalidateCache } from 'redux-cache';
 
 var { width } = Dimensions.get('window');
 
@@ -51,14 +52,19 @@ class DispatchScreen extends React.Component {
     this.setState({indexSelected: -1});
   }
 
+  componentDidUpdate = () => {
+    const {navigation, logout, logOut} = this.props;
+
+    if(logout){
+      logOut();
+      navigation.navigate('Auth');
+    }
+  }
+
   render() {
-    const { t, orderID, isFetching, i18n, hasError, dispatchList} = this.props;
+    const { t, isFetching, i18n, dispatchList} = this.props;
     const { language } = i18n;
     const { indexSelected } = this.state;
-
-    if(hasError){
-
-    }
 
     if(dispatchList){
       if(dispatchList.length > 0){
@@ -241,7 +247,8 @@ const mapStateToProps = (state) => {
     orderID: state.dispatch.orderID,
     isFetching: state.dispatch.isFetching,
     hasError: state.dispatch.hasError,
-    dispatchList: state.dispatch.dispatchList
+    dispatchList: state.dispatch.dispatchList,
+    logout: state.dispatch.logout
   }
 }
 
@@ -252,6 +259,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
     GetDispatches: (lng, token) => {
       dispatch(GetDispatchList(lng, token));
+    },
+    logOut: () => {
+      dispatch(invalidateCache([
+        'login',
+        'dispatch'
+      ]))
     }
   }
 }

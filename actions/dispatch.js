@@ -6,6 +6,7 @@ export const DISPATCH_LIST_LOADING = 'DISPATCH_LIST_LOADING';
 export const DISPATCH_LIST = 'DISPATCH_LIST';
 export const DISPATCH_LIST_ERROR = 'DISPATCH_LIST_ERROR';
 export const UPDATE_ORDER_ID = 'UPDATE_ORDER_ID';
+export const LOGOUT = 'LOGOUT';
 
 export function DispatchListLoading(bool){
     return { 
@@ -35,6 +36,13 @@ export function newOrderId(id){
   }
 }
 
+export function logout(bool){
+  return {
+    type: LOGOUT,
+    payload: bool
+  }
+}
+
 export function updateOrderId(id){
   return(dispatch) => {
     dispatch(newOrderId(id));
@@ -61,7 +69,9 @@ export function GetDispatchList(lng, token) {
         fetch(`${conn}/SalesOrder/ToDispatch`, options)
         .then(response => {
             console.log(response.status);
-            if(response.status != 200){
+            if(response.status == 401){
+              dispatch(logout(true));
+            } else if(response.status != 200){
               dispatch(DispatchListError(true));
             } else {
               return response.json();
